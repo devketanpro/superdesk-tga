@@ -7,10 +7,12 @@
 module.exports = function() {
     return {
         apps: [
+            'superdesk.analytics',
             'superdesk-planning',
         ],
         importApps: [
             '../index',
+            'superdesk-analytics',
             'superdesk-planning',
         ],
 
@@ -66,6 +68,7 @@ module.exports = function() {
         item_profile: { change_profile: 1 },
 
         workspace: {
+            analytics: true,
             planning: true,
             assignments: true,
         },
