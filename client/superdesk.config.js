@@ -15,7 +15,6 @@ module.exports = function() {
             'superdesk-analytics',
             'superdesk-planning',
         ],
-
         defaultRoute: '/workspace/monitoring',
 
         langOverride: {
@@ -27,88 +26,30 @@ module.exports = function() {
 
         view: {
             timeformat: 'HH:mm',
-            dateformat: 'DD.MM.YYYY',
+            dateformat: 'DD/MM/YYYY',
         },
 
-        shortTimeFormat: 'HH:mm, DD.MM.YYYY',
-        shortDateFormat: 'HH:mm, DD.MM.YYYY',
-        shortWeekFormat: 'HH:mm, DD.MM.YYYY',
-        startingDay: '1',
-        defaultTimezone: 'Europe/Prague',
-        
-        editor3: { browserSpellCheck: true, },
-        
-        search_cvs: [
-            {id: 'topics', name:'Topics', field: 'subject', list: 'topics'},
-            {id: 'language', name:'Language', field: 'language', list: 'languages'}
-        ],
+        shortTimeFormat: 'HH:mm, DD/MM/YYYY',
+        shortDateFormat: 'HH:mm, DD/MM/YYYY',
+        shortWeekFormat: 'HH:mm, DD/MM/YYYY',
+        startingDay: '0',
+        defaultTimezone: 'Australia/Melbourne',
 
         features: {
             preview: 1,
-            swimlane: {columnsLimit: 99},
             swimlane: {defaultNumberOfColumns: 4},
             editor3: true,
-            editorHighlights: true,
-            noPublishOnAuthoringDesk: true,
-            customAuthoringTopbar: {
-                toDesk: true,
-                publish: true,
-            },
             validatePointOfInterestForImages: true,
             editorHighlights: true,
-            editFeaturedImage: true,
-            searchShortcut: true,
-            elasticHighlight: true,
             planning: true,
-            autorefreshContent: true,
-            nestedItemsInOutputStage: true,
-            planning: true,
+            customAuthoringTopbar: {
+                toDesk: true,
+            },
         },
-        
-        item_profile: { change_profile: 1 },
-
         workspace: {
             analytics: true,
             planning: true,
             assignments: true,
         },
-        
-        ui: {
-            italicAbstract: false,
-            },
-
-        list: {
-            priority: [
-                'urgency'
-            ],
-            firstLine: [
-                'headline',  
-                'highlights',
-                'markedDesks',
-                'associatedItems',
-                'versioncreated'
-            ],
-            secondLine: [
-                'state',
-                'update',
-                'scheduledDateTime',
-                'flags',
-                'updated',
-                'provider',
-                'desk',
-                'fetchedDesk',
-                'used',
-                'nestedlink'
-            ]
-        },
-
-        monitoring: {
-            scheduled: {
-                sort: {
-                    default: { field: 'publish_schedule', order: 'asc' },
-                    allowed_fields_to_sort: [ 'publish_schedule' ]
-                }
-            },
-        },   
     };
 };
