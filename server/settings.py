@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "apps.languages",
     "planning",
     "analytics",
+    "tga.signal_hooks",
 ]
 
 MACROS_MODULE = env('MACROS_MODULE', 'macros')
