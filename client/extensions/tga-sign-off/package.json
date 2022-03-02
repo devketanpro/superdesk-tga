@@ -9,6 +9,6 @@
     "devDependencies": {
         "superdesk-code-style": "1.5.0",
         "typescript": "3.9.7",
-        "superdesk-ui-framework": "2.4.9"
+        "superdesk-ui-framework": "2.4.17"
     }
 }
