@@ -46,6 +46,7 @@ module.exports = function() {
             customAuthoringTopbar: {
                 toDesk: true,
             },
+            slackNotifications: 1,
         },
         workspace: {
             analytics: true,

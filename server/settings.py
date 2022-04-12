@@ -157,3 +157,6 @@ PLANNING_AUTO_ASSIGN_TO_WORKFLOW = True
 
 # check for unfulfilled assignments when publishing a story
 PLANNING_CHECK_FOR_ASSIGNMENT_ON_PUBLISH = True
+
+# The Bot User OAuth Token for access to Slack
+SLACK_BOT_TOKEN = env('SLACK_BOT_TOKEN', '')
