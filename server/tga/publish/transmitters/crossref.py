@@ -23,7 +23,7 @@ class CrossrefPushService(HTTPPushService):
         response = requests.post(
             url,
             data={
-                "operation": "doQueryUpload",
+                "operation": "doMDUpload",
                 "login_id": username,
                 "login_password": password
             },
