@@ -160,3 +160,5 @@ PLANNING_CHECK_FOR_ASSIGNMENT_ON_PUBLISH = True
 
 # The Bot User OAuth Token for access to Slack
 SLACK_BOT_TOKEN = env('SLACK_BOT_TOKEN', '')
+
+APM_SERVICE_NAME = "360info"
