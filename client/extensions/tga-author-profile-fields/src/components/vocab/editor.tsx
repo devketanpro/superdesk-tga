@@ -31,6 +31,8 @@ export class VocabularyField extends React.PureComponent<IVocabularyFieldProps> 
                             }}
                             value={this.props.value?.qcode}
                             inlineLabel={true}
+                            label={'CV Item'}
+                            labelHidden={true}
                             disabled={this.props.readOnly}
                         >
                             <Option />

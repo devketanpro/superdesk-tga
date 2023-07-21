@@ -97,6 +97,7 @@ export function getUserSignOffModal(fieldProps: IEditorProps, currentUser: IUser
                                 </p>
                                 <Input
                                     value={this.state.signOff.funding_source ?? ''}
+                                    type="text"
                                     disabled={disabled}
                                     onChange={(value) => {
                                         this.updateField('funding_source', value);
@@ -116,6 +117,7 @@ export function getUserSignOffModal(fieldProps: IEditorProps, currentUser: IUser
                                 </span>
                                 <Input
                                     value={this.state.signOff.affiliation ?? ''}
+                                    type="text"
                                     disabled={disabled}
                                     onChange={(value) => {
                                         this.updateField('affiliation', value);
@@ -197,7 +199,7 @@ export function getUserSignOffModal(fieldProps: IEditorProps, currentUser: IUser
                     </ModalBody>
                     <ModalFooter>
                         <div className="sd-d-flex">
-                            <ButtonGroup align="right">
+                            <ButtonGroup align="end">
                                 <Button
                                     text={showSave ? gettext('Cancel') : gettext('Close')}
                                     onClick={this.props.closeModal}

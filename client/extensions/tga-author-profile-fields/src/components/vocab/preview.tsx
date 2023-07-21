@@ -1,15 +1,13 @@
 import * as React from 'react';
 
-import {IPreviewComponentProps, IVocabularyItem,} from 'superdesk-api';
+import {IPreviewComponentProps, IVocabularyItem} from 'superdesk-api';
 
-export class VocabularyPreview extends React.PureComponent<IPreviewComponentProps> {
+export class VocabularyPreview extends React.PureComponent<IPreviewComponentProps<IVocabularyItem>> {
     render() {
-        const item: IVocabularyItem = this.props.value;
-
         return (
             <div className="form__row form__row--small-padding">
                 <p className="sd-text__normal">
-                    {item.name}
+                    {this.props.value.name}
                 </p>
             </div>
         );

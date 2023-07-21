@@ -80,7 +80,7 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
                             disabled={this.props.readOnly}
                         />
                     ) : (
-                        <ButtonGroup align="right">
+                        <ButtonGroup align="end">
                             {this.props.readOnly ? null : (
                                 <Button
                                     type="default"

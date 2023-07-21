@@ -55,8 +55,8 @@ class AuthoringProfileService(ItemsService):
 
         return super().find_one(req=req, **lookup)
 
-    def _process_fetched_object(self, profile: Dict[str, Any]):
-        super()._process_fetched_object(profile)
+    def _process_fetched_object(self, profile: Dict[str, Any], audit=True):
+        super()._process_fetched_object(profile, audit)
         KEYS_TO_KEEP = ["firstcreated", "versioncreated", "original_id", "firstpublished", "_type", "_links", "uri",
                         "extra", "guid"]
         for key in list(profile.keys()):
