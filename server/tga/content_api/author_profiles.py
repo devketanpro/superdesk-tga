@@ -12,21 +12,39 @@ from tga.author_profiles import AUTHOR_PROFILE_ROLE
 
 
 class AuthorProfileResource(ItemsResource):
-    datasource = {
-        "source": "items",
-        "search_backend": "elastic",
-        "default_sort": [("versioncreated", -1)]
-    }
+    datasource = {"source": "items", "search_backend": "elastic", "default_sort": [("versioncreated", -1)]}
     item_methods = ["GET"]
     resource_methods = ["GET"]
 
 
-def _get_content_profile_public_field_ids():
-    return [
-        field["_id"]
+def _get_content_profile_public_fields():
+    field_names = [
+        field
         for field in superdesk.get_resource_service("vocabularies").get_extra_fields()
         if not (field.get("custom_field_config") or {}).get("exclude_from_content_api")
     ]
+
+    return field_names
+
+
+def _get_multi_selection_profile_fields(fields):
+    cv_ids = [
+        (field.get("custom_field_config") or {}).get("vocabulary_name")
+        for field in fields
+        if field.get("custom_field_type") == "vocabulary-field"
+    ]
+    cv_service = superdesk.get_resource_service("vocabularies")
+    cvs = {cv["_id"]: cv for cv in cv_service.get_from_mongo(req=None, lookup={"_id": {"$in": cv_ids}})}
+
+    def is_field_multi_selection(field):
+        try:
+            return (cvs[(field.get("custom_field_config") or {}).get("vocabulary_name")] or {}).get(
+                "selection_type"
+            ) == "multi selection"
+        except KeyError:
+            return False
+
+    return [field["_id"] for field in fields if is_field_multi_selection(field)]
 
 
 class AuthoringProfileService(ItemsService):
@@ -55,10 +73,19 @@ class AuthoringProfileService(ItemsService):
 
         return super().find_one(req=req, **lookup)
 
-    def _process_fetched_object(self, profile: Dict[str, Any]):
-        super()._process_fetched_object(profile)
-        KEYS_TO_KEEP = ["firstcreated", "versioncreated", "original_id", "firstpublished", "_type", "_links", "uri",
-                        "extra", "guid"]
+    def _process_fetched_object(self, profile: Dict[str, Any], audit=True):
+        super()._process_fetched_object(profile, audit)
+        KEYS_TO_KEEP = [
+            "firstcreated",
+            "versioncreated",
+            "original_id",
+            "firstpublished",
+            "_type",
+            "_links",
+            "uri",
+            "extra",
+            "guid",
+        ]
         for key in list(profile.keys()):
             if key not in KEYS_TO_KEEP:
                 profile.pop(key)
@@ -68,36 +95,47 @@ class AuthoringProfileService(ItemsService):
         profile.pop("extra")
 
     def get_profile_value_enhanced(self, item):
-        field_names = _get_content_profile_public_field_ids()
+        fields = _get_content_profile_public_fields()
+        field_names = [field["_id"] for field in fields]
+        multi_value_field_names = _get_multi_selection_profile_fields(fields)
         profile = {}
         for key, val in item.items():
             if key not in field_names:
+                continue
+            elif val is None:
                 continue
             elif key == "profile_id":
                 profile["profile_id"] = val
             else:
                 profile_key = key.replace("profile_", "")
+
                 if isinstance(val, dict):
-                    profile[profile_key] = val.get("name") or val.get("qcode")
-                    if profile == "country" and val.get("region"):
+                    profile_value = val.get("name") or val.get("qcode")
+                    if profile_key == "country" and val.get("region"):
                         profile["region"] = val["region"]
+                elif isinstance(val, list) and key in multi_value_field_names:
+                    profile_value = [cv.get("name") or cv.get("qcode") for cv in val]
                 else:
-                    profile[profile_key] = val
+                    profile_value = val
+
+                profile[profile_key] = profile_value
 
         return profile
 
     def get_author_profiles_by_user_ids(self, user_ids) -> List[Dict[str, Any]]:
         urn_domain = app.config["URN_DOMAIN"]
-        return self.search({
-            "query": {
-                "bool": {
-                    "must": [
-                        {"terms": {"authors.uri": [f"urn:{urn_domain}:user:{user_id}" for user_id in user_ids]}},
-                        {"term": {"authors.role": AUTHOR_PROFILE_ROLE}},
-                    ],
+        return self.search(
+            {
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"terms": {"authors.uri": [f"urn:{urn_domain}:user:{user_id}" for user_id in user_ids]}},
+                            {"term": {"authors.role": AUTHOR_PROFILE_ROLE}},
+                        ],
+                    },
                 },
-            },
-        })
+            }
+        )
 
     def ehance_embedded_item_authors(self, document):
         if not document.get("authors") or document["authors"][0].get("role") == AUTHOR_PROFILE_ROLE:
@@ -107,7 +145,6 @@ class AuthoringProfileService(ItemsService):
             profile["extra"]["profile_id"]: self.get_profile_value_enhanced(profile["extra"])
             for profile in self.get_author_profiles_by_user_ids([author["code"] for author in document["authors"]])
         }
-        field_names = _get_content_profile_public_field_ids()
         for author in document.get("authors"):
             author_id = author.get("code")
 
@@ -116,10 +153,8 @@ class AuthoringProfileService(ItemsService):
                 # Profile not found for this Author
                 continue
 
-            for field in field_names:
-                profile_field = field.replace("profile_", "")
-                if author_profile.get(profile_field):
-                    author[profile_field] = author_profile[profile_field]
+            for field, value in author_profile.items():
+                author[field] = value
 
     def on_item_fetched(self, document):
         self.ehance_embedded_item_authors(document)

@@ -9,9 +9,7 @@ import {hasUserSignedOff} from '../../utils';
 import {IconLabel, ToggleBox} from 'superdesk-ui-framework/react';
 import {SignOffDetails} from '../details';
 
-interface IProps extends IPreviewComponentProps {
-    value: IUserSignOff | null;
-}
+type IProps = IPreviewComponentProps<IUserSignOff | null>;
 
 export class UserSignOffPreview extends React.PureComponent<IProps> {
     render() {

@@ -33,8 +33,8 @@ jobs:
         python -m pip install --upgrade pip wheel setuptools
         pip install -r dev-requirements.txt
 
-    - name: nosetests
-      run: nosetests tests
+    - name: pytest
+      run: pytest --log-level=ERROR --disable-warnings
 
     - name: initialize data
       run: python manage.py app:initialize_data
@@ -53,8 +53,6 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 14.x
-        cache: 'npm'
-        cache-dependency-path: client/package-lock.json
 
     - run: git config --global url."https://git@".insteadOf git://
 

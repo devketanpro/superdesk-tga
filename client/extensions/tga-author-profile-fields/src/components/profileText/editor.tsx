@@ -1,14 +1,12 @@
 import * as React from 'react';
 
-import {IEditorComponentProps, IUser} from 'superdesk-api';
+import {IUser} from 'superdesk-api';
 import {superdesk} from '../../superdesk';
-import {IProfileTextFieldConfig} from './interfaces';
+import {IProfileTextFieldProps} from './interfaces';
 import {Input} from 'superdesk-ui-framework/react'
 
-type IProps = IEditorComponentProps<string, IProfileTextFieldConfig>;
-
-export class ProfileTextField extends React.PureComponent<IProps> {
-    constructor(props: IProps) {
+export class ProfileTextField extends React.PureComponent<IProfileTextFieldProps> {
+    constructor(props: IProfileTextFieldProps) {
         super(props);
 
         this.onProfileIDChanged = this.onProfileIDChanged.bind(this);
@@ -47,7 +45,7 @@ export class ProfileTextField extends React.PureComponent<IProps> {
         return this.props.config?.use_editor_3 ? (
             <Editor3Html
                 key={this.props.item.extra?.profile_id}
-                value={this.props.value}
+                value={this.props.value ?? ''}
                 onChange={this.props.setValue}
                 readOnly={this.props.readOnly}
             />
@@ -55,6 +53,7 @@ export class ProfileTextField extends React.PureComponent<IProps> {
             <Input
                 key={this.props.item.extra?.profile_id}
                 value={this.props.value}
+                type="text"
                 disabled={this.props.readOnly}
                 onChange={this.props.setValue}
             />

@@ -8,7 +8,9 @@
     },
     "devDependencies": {
         "superdesk-code-style": "1.5.0",
-        "typescript": "3.9.7",
-        "superdesk-ui-framework": "2.4.17"
+        "typescript": "~4.9.5"
+    },
+    "peerDependencies": {
+        "superdesk-ui-framework": "3.0.9"
     }
 }
