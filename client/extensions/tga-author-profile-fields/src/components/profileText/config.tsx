@@ -21,7 +21,7 @@ export class ProfileTextFieldConfig extends React.PureComponent<IProps> {
         return (
             <Spacer type="vertical" spacing="medium">
                 <Switch
-                    label={{text: gettext('Use Editor 3')}}
+                    label={{content: gettext('Use Editor 3')}}
                     value={config?.use_editor_3 == true}
                     onChange={(use_editor_3) => {
                         this.props.onChange({
@@ -31,7 +31,7 @@ export class ProfileTextFieldConfig extends React.PureComponent<IProps> {
                     }}
                 />
                 <Switch
-                    label={{text: gettext('Exclude from ContentAPI')}}
+                    label={{content: gettext('Exclude from ContentAPI')}}
                     value={config?.exclude_from_content_api == true}
                     onChange={(exclude_from_content_api) => {
                         this.props.onChange({

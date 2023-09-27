@@ -67,7 +67,7 @@ export class VocabularyField extends React.PureComponent<IVocabularyFieldProps> 
                                     style={{maxWidth: '600px'}} // Define max-width, so SDGs will fit in screen
                                 >
                                     <Label
-                                        text={item.qcode}
+                                        text={item.qcode || ''}
                                         style="translucent"
                                     />
                                     <span className="sd-text__normal sd-whitespace--normal">
