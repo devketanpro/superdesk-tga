@@ -75,7 +75,7 @@ export class VocabularyFieldConfig extends React.Component<IProps, IState> {
                     ))}
                 </Select>
                 <Switch
-                    label={{text: gettext('Allow Freetext')}}
+                    label={{content: gettext('Allow Freetext')}}
                     value={config?.allow_freetext == true}
                     onChange={(allow_freetext) => {
                         this.props.onChange({
@@ -85,7 +85,7 @@ export class VocabularyFieldConfig extends React.Component<IProps, IState> {
                     }}
                 />
                 <Switch
-                    label={{text: gettext('Exclude from ContentAPI')}}
+                    label={{content: gettext('Exclude from ContentAPI')}}
                     value={config?.exclude_from_content_api == true}
                     onChange={(exclude_from_content_api) => {
                         this.props.onChange({
