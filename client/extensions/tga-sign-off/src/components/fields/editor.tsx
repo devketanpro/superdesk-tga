@@ -8,22 +8,12 @@ import {hasUserSignedOff} from '../../utils';
 import {Button, ButtonGroup} from 'superdesk-ui-framework/react';
 import {SignOffDetails} from '../details';
 
-interface IState {
-    showModal: boolean;
-}
-
-export class UserSignOffField extends React.Component<IEditorProps, IState> {
-    private removeMarkedListener: () => void;
-
+export class UserSignOffField extends React.Component<IEditorProps> {
     constructor(props: IEditorProps) {
         super(props);
 
         this.removeSignOff = this.removeSignOff.bind(this);
         this.sendSignOff = this.sendSignOff.bind(this);
-        this.handleAuthorApprovalUpdate = this.handleAuthorApprovalUpdate.bind(this);
-        this.removeMarkedListener = () => {};
-
-        this.state = {showModal: false};
     }
 
     sendSignOff() {
@@ -37,48 +27,17 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
         });
     }
 
-    handleAuthorApprovalUpdate(event: any) {
-        const newData = event.new_sign_off_data;
-
-        this.props.setValue({
-            user_id: superdesk.session.getCurrentUserId(),
-            consent_disclosure: newData.consent_disclosure,
-            consent_publish: newData.consent_publish,
-            affiliation: newData.affiliation,
-            funding_source: newData.funding_source,
-            sign_date: newData.sign_date,
-            version_signed: newData.version_signed,
-        })
-    }
-
-    componentDidMount() {
-        this.removeMarkedListener = superdesk.addWebsocketMessageListener('author_approval:updated', this.handleAuthorApprovalUpdate)
-
-        if (this.props.value?.user_id == null) {
-            this.props.setValue({
-                consent_publish: false,
-                consent_disclosure: false,
-            });
-        }
-    }
-
-    componentWillUnmount(): void {
-        this.removeMarkedListener();
-    }
-
     removeSignOff() {
         const {confirm} = superdesk.ui;
 
         confirm('Are you sure you want to remove this publishing sign off?', 'Remove publishing sign off')
             .then((response) => {
                 if (response) {
-                    this.props.setValue({
-                        consent_publish: false,
-                        consent_disclosure: false,
-                        user_id: null,
-                        funding_source: null,
-                        affiliation: null,
-                        sign_date: null,
+                    superdesk.entities.article.patch(this.props.item, {
+                        extra: {
+                            ...(this.props.item.extra ?? {}),
+                            publish_sign_off: {},
+                        }
                     });
                 }
             })
@@ -87,14 +46,13 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
     render() {
         const {gettext} = superdesk.localization;
         const {getCurrentUserId} = superdesk.session;
-
-        const isSameUser = getCurrentUserId() === this.props.value?.user_id;
+        const isSameUser = getCurrentUserId() === this.props.item.extra?.sign_off_data?.user_id;
 
         return (
             <div className="sd-display-flex-column">
                 <div className="sd-d-flex sd-flex-align-items-center">
-                    <SignOffDetails signOff={this.props.value} />
-                    {!hasUserSignedOff(this.props.value) ? (
+                    <SignOffDetails signOff={this.props.item.extra?.sign_off_data} />
+                    {!hasUserSignedOff(this.props.item.extra?.sign_off_data) ? (
                         <Button
                             type="warning"
                             icon="warning-sign"
@@ -124,17 +82,17 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
                         </ButtonGroup>
                     )}
                 </div>
-                {!this.props.value?.funding_source?.length ? null : (
+                {!this.props.item.extra?.funding_source?.length ? null : (
                     <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                         <label className="form-label form-label--block">Funding Source:</label>
-                        <span>{this.props.value.funding_source}</span>
+                        <span>{this.props.item.extra.funding_source}</span>
                     </div>
                 )}
 
-                {!this.props.value?.affiliation?.length ? null : (
+                {!this.props.item.extra?.affiliation?.length ? null : (
                     <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                         <label className="form-label form-label--block">Affiliation:</label>
-                        <span>{this.props.value.affiliation}</span>
+                        <span>{this.props.item.extra.affiliation}</span>
                     </div>
                 )}
             </div>
