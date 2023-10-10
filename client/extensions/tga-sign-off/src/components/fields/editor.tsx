@@ -6,7 +6,6 @@ import {superdesk} from '../../superdesk';
 import {hasUserSignedOff} from '../../utils';
 
 import {Button, ButtonGroup} from 'superdesk-ui-framework/react';
-import {getUserSignOffModal} from '../modal';
 import {SignOffDetails} from '../details';
 
 interface IState {
@@ -14,16 +13,35 @@ interface IState {
 }
 
 export class UserSignOffField extends React.Component<IEditorProps, IState> {
+    private removeMarkedListener: () => void;
+
     constructor(props: IEditorProps) {
         super(props);
 
-        this.showModal = this.showModal.bind(this);
         this.removeSignOff = this.removeSignOff.bind(this);
+        this.handleAuthorApprovalUpdate = this.handleAuthorApprovalUpdate.bind(this);
+        this.removeMarkedListener = () => {};
 
         this.state = {showModal: false};
     }
 
+    handleAuthorApprovalUpdate(event: any) {
+        const newData = event.new_sign_off_data;
+
+        this.props.setValue({
+            user_id: superdesk.session.getCurrentUserId(),
+            consent_disclosure: newData.consent_disclosure,
+            consent_publish: newData.consent_publish,
+            affiliation: newData.affiliation,
+            funding_source: newData.funding_source,
+            sign_date: newData.sign_date,
+            version_signed: newData.version_signed,
+        })
+    }
+
     componentDidMount() {
+        this.removeMarkedListener = superdesk.addWebsocketMessageListener('author_approval:updated', this.handleAuthorApprovalUpdate)
+
         if (this.props.value?.user_id == null) {
             this.props.setValue({
                 consent_publish: false,
@@ -32,14 +50,8 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
         }
     }
 
-    showModal() {
-        const {showModal} = superdesk.ui;
-        const {getCurrentUser} = superdesk.session;
-
-        getCurrentUser().then((currentUser) => {
-            const Modal = getUserSignOffModal(this.props, currentUser);
-            showModal(Modal);
-        })
+    componentWillUnmount(): void {
+        this.removeMarkedListener();
     }
 
     removeSignOff() {
@@ -75,7 +87,16 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
                             type="warning"
                             icon="warning-sign"
                             text={gettext('Sign Off')}
-                            onClick={this.showModal}
+                            onClick={() => {
+                                superdesk.httpRequestJsonLocal({
+                                    method: "POST",
+                                    path: "/api/sign_off_request",
+                                    payload: {
+                                        item_id: this.props.item._id,
+                                        authors: this.props.item.authors,
+                                    }
+                                });
+                            }}
                             expand={true}
                             disabled={this.props.readOnly}
                         />
@@ -94,7 +115,16 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
                                     type="primary"
                                     text={gettext('Edit')}
                                     icon="pencil"
-                                    onClick={this.showModal}
+                                    onClick={() => {
+                                        superdesk.httpRequestJsonLocal({
+                                            method: "POST",
+                                            path: "/api/sign_off_request",
+                                            payload: {
+                                                item_id: this.props.item._id,
+                                                authors: this.props.item.authors,
+                                            }
+                                        });
+                                    }}
                                 />
                             )}
                         </ButtonGroup>
