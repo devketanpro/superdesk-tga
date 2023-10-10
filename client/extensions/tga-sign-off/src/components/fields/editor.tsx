@@ -19,10 +19,22 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
         super(props);
 
         this.removeSignOff = this.removeSignOff.bind(this);
+        this.sendSignOff = this.sendSignOff.bind(this);
         this.handleAuthorApprovalUpdate = this.handleAuthorApprovalUpdate.bind(this);
         this.removeMarkedListener = () => {};
 
         this.state = {showModal: false};
+    }
+
+    sendSignOff() {
+        superdesk.httpRequestJsonLocal({
+            method: "POST",
+            path: "/api/sign_off_request",
+            payload: {
+                item_id: this.props.item._id,
+                authors: this.props.item.authors,
+            }
+        });
     }
 
     handleAuthorApprovalUpdate(event: any) {
@@ -87,16 +99,7 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
                             type="warning"
                             icon="warning-sign"
                             text={gettext('Sign Off')}
-                            onClick={() => {
-                                superdesk.httpRequestJsonLocal({
-                                    method: "POST",
-                                    path: "/api/sign_off_request",
-                                    payload: {
-                                        item_id: this.props.item._id,
-                                        authors: this.props.item.authors,
-                                    }
-                                });
-                            }}
+                            onClick={this.sendSignOff}
                             expand={true}
                             disabled={this.props.readOnly}
                         />
@@ -115,16 +118,7 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
                                     type="primary"
                                     text={gettext('Edit')}
                                     icon="pencil"
-                                    onClick={() => {
-                                        superdesk.httpRequestJsonLocal({
-                                            method: "POST",
-                                            path: "/api/sign_off_request",
-                                            payload: {
-                                                item_id: this.props.item._id,
-                                                authors: this.props.item.authors,
-                                            }
-                                        });
-                                    }}
+                                    onClick={this.sendSignOff}
                                 />
                             )}
                         </ButtonGroup>
