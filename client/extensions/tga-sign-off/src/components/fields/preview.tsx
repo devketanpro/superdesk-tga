@@ -14,7 +14,8 @@ type IProps = IPreviewComponentProps<IUserSignOff | null>;
 export class UserSignOffPreview extends React.PureComponent<IProps> {
     render() {
         const {gettext} = superdesk.localization;
-        const isSignedOff = hasUserSignedOff(this.props.value);
+        const sign_off_data = this.props.item.extra?.sign_off_data;
+        const isSignedOff = hasUserSignedOff(sign_off_data);
 
         return (
             <div className="sd-display-flex-column">
@@ -30,18 +31,18 @@ export class UserSignOffPreview extends React.PureComponent<IProps> {
                         style="translucent"
                     />
                     <div className="sd-d-flex sd-flex-align-items-center">
-                        <SignOffDetails signOff={this.props.value} />
+                        <SignOffDetails signOff={sign_off_data} />
                     </div>
-                    {!this.props.value?.funding_source?.length ? null : (
+                    {!sign_off_data?.funding_source?.length ? null : (
                         <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                             <label className="form-label form-label--block">Funding Source:</label>
-                            <span>{this.props.value.funding_source}</span>
+                            <span>{sign_off_data.funding_source}</span>
                         </div>
                     )}
-                    {!this.props.value?.affiliation?.length ? null : (
+                    {!sign_off_data?.affiliation?.length ? null : (
                         <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                             <label className="form-label form-label--block">Affiliation:</label>
-                            <span>{this.props.value.affiliation}</span>
+                            <span>{sign_off_data.affiliation}</span>
                         </div>
                     )}
                 </ToggleBox>
