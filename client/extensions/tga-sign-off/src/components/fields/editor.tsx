@@ -29,8 +29,9 @@ export class UserSignOffField extends React.Component<IEditorProps> {
 
     removeSignOff() {
         const {confirm} = superdesk.ui;
+        const {gettext} = superdesk.localization;
 
-        confirm('Are you sure you want to remove this publishing sign off?', 'Remove publishing sign off')
+        confirm(gettext('Are you sure you want to remove this publishing sign off?'), gettext('Remove publishing sign off'))
             .then((response) => {
                 if (response) {
                     superdesk.entities.article.patch(this.props.item, {
@@ -46,13 +47,14 @@ export class UserSignOffField extends React.Component<IEditorProps> {
     render() {
         const {gettext} = superdesk.localization;
         const {getCurrentUserId} = superdesk.session;
-        const isSameUser = getCurrentUserId() === this.props.item.extra?.sign_off_data?.user_id;
+        const sign_off_data = this.props.item.extra?.sign_off_data;
+        const isSameUser = getCurrentUserId() === sign_off_data?.user_id;
 
         return (
             <div className="sd-display-flex-column">
                 <div className="sd-d-flex sd-flex-align-items-center">
-                    <SignOffDetails signOff={this.props.item.extra?.sign_off_data} />
-                    {!hasUserSignedOff(this.props.item.extra?.sign_off_data) ? (
+                    <SignOffDetails signOff={sign_off_data} />
+                    {!hasUserSignedOff(sign_off_data) ? (
                         <Button
                             type="warning"
                             icon="warning-sign"
@@ -63,7 +65,7 @@ export class UserSignOffField extends React.Component<IEditorProps> {
                         />
                     ) : (
                         <ButtonGroup align="end">
-                            {this.props.readOnly ? null : (
+                            {this.props.readOnly !== true && (
                                 <Button
                                     type="default"
                                     text={gettext('Remove')}
@@ -71,7 +73,7 @@ export class UserSignOffField extends React.Component<IEditorProps> {
                                     onClick={this.removeSignOff}
                                 />
                             )}
-                            {(this.props.readOnly || !isSameUser) ? null : (
+                            {!(this.props.readOnly || !isSameUser) && (
                                 <Button
                                     type="primary"
                                     text={gettext('Edit')}
@@ -82,17 +84,17 @@ export class UserSignOffField extends React.Component<IEditorProps> {
                         </ButtonGroup>
                     )}
                 </div>
-                {!this.props.item.extra?.funding_source?.length ? null : (
+                {(sign_off_data.funding_source?.length ?? 0 > 0) && (
                     <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
-                        <label className="form-label form-label--block">Funding Source:</label>
-                        <span>{this.props.item.extra.funding_source}</span>
+                        <label className="form-label form-label--block">{gettext('Funding Source:')}</label>
+                        <span>{sign_off_data.funding_source}</span>
                     </div>
                 )}
 
-                {!this.props.item.extra?.affiliation?.length ? null : (
+                {(sign_off_data.affiliation?.length ?? 0 > 0) && (
                     <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
-                        <label className="form-label form-label--block">Affiliation:</label>
-                        <span>{this.props.item.extra.affiliation}</span>
+                        <label className="form-label form-label--block">{gettext('Affiliation:')}</label>
+                        <span>{sign_off_data.affiliation}</span>
                     </div>
                 )}
             </div>
