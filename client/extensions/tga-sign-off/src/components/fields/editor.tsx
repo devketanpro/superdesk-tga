@@ -84,14 +84,14 @@ export class UserSignOffField extends React.Component<IEditorProps> {
                         </ButtonGroup>
                     )}
                 </div>
-                {(sign_off_data.funding_source?.length ?? 0 > 0) && (
+                {(sign_off_data.funding_source?.length ?? 0) > 0 && (
                     <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                         <label className="form-label form-label--block">{gettext('Funding Source:')}</label>
                         <span>{sign_off_data.funding_source}</span>
                     </div>
                 )}
 
-                {(sign_off_data.affiliation?.length ?? 0 > 0) && (
+                {(sign_off_data.affiliation?.length ?? 0) > 0 && (
                     <div className="sd-display-flex-column sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                         <label className="form-label form-label--block">{gettext('Affiliation:')}</label>
                         <span>{sign_off_data.affiliation}</span>
