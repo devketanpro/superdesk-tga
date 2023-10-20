@@ -1,4 +1,8 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+
+from bson import ObjectId
+from flask import current_app as app
+
 from superdesk import get_resource_service
 
 
@@ -20,6 +24,9 @@ def update_author_profile_content(_sender: Any, updates: Dict[str, Any], origina
 
 def _get_content_profile_custom_fields(original: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Get the list of ``CustomFields`` from the ``ContentProfile`` for the content provided"""
+
+    if original.get("profile") is None:
+        return []
 
     content_profile = get_resource_service("content_types").find_one(req=None, _id=original["profile"])
     return [
@@ -116,3 +123,27 @@ def _add_cv_item_on_update(updates: Dict[str, Any], original: Dict[str, Any], cu
                 }
             )
             cv_service.patch(cv_id, cv_updates)
+
+
+def get_author_profiles_by_user_id(user_ids: List[ObjectId]) -> Dict[ObjectId, Dict[str, Any]]:
+    urn_domain = app.config["URN_DOMAIN"]
+    query = {
+        "query": {
+            "bool": {
+                "must": [
+                    {"terms": {"authors.uri": [f"urn:{urn_domain}:user:{user_id}" for user_id in user_ids]}},
+                    {"term": {"authors.role": AUTHOR_PROFILE_ROLE}},
+                ],
+            },
+        },
+    }
+
+    try:
+        response = get_resource_service("author_profiles").search(query)
+    except KeyError:
+        response = get_resource_service("items").search(query)
+
+    if response.count():
+        return {ObjectId(user["extra"]["profile_id"]): user for user in response}
+
+    return {}
