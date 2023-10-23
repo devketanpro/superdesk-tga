@@ -47,6 +47,7 @@ module.exports = function() {
                 toDesk: true,
             },
             slackNotifications: 1,
+            noPublishOnAuthoringDesk: true,
         },
         workspace: {
             analytics: true,
