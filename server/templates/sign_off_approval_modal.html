@@ -1,0 +1,83 @@
+<div id="modal-container" style="display: none">
+    <div>
+        <div class="modal__backdrop fade in"></div>
+        <div class="modal modal--fill" style="display: block;">
+            <div class="modal__dialog">
+                <div class="modal__content">
+                    <div class="modal__header modal__header--flex">
+                        <h3 class="modal__heading">Sign Off</h3>
+                        <button class="icn-btn">
+                            <i id="btn-footer-close-modal" class="icon-close-small"></i>
+                        </button>
+                    </div>
+                    <div class="modal__body">
+                        {% if form_errors %}
+                            <h3>An error occurred while processing your request.</h3>
+                            <ul>
+                            {% for field, errors in form_errors.items() %}
+                                <li><strong>{{ field }}:</strong> {{ ','.join(errors) }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            {% include "sign_off_approval_modal_form.html" %}
+                        {% endif %}
+                    </div>
+                    <div class="modal__footer" style="justify-content: flex-end">
+                        <div class="sd-d-flex">
+                            <div class="button-group button-group--end button-group--comfort" role="group">
+                                <button id="btn-cancel-approval-modal" type="reset" class="btn" form="form-submit-approval">Cancel</button>
+                                <button id="btn-approve" class="btn btn--primary" type="submit" form="form-submit-approval" disabled>Approve</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const btnProvideApproval = document.getElementById('btn-provide-approval');
+    const modalContainer = document.getElementById('modal-container');
+    const btnFooterCloseModal = document.getElementById('btn-footer-close-modal');
+    const btnCancelApprovalModal = document.getElementById('btn-cancel-approval-modal');
+    const btnApprove = document.getElementById('btn-approve');
+    const authoringHeader = document.getElementById('authoring-header');
+    const btnAuthoringHeaderToggle = document.getElementById('btn-authoring-header-toggle');
+
+    function showModal() {
+        modalContainer.style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('article_name').focus();
+        });
+    }
+    function hideModal() {
+        modalContainer.style.display = 'none';
+    }
+
+    btnProvideApproval.addEventListener('click', showModal);
+    btnFooterCloseModal.addEventListener('click', hideModal);
+    btnCancelApprovalModal.addEventListener('click', hideModal);
+
+    btnAuthoringHeaderToggle.addEventListener('click', function() {
+        if (authoringHeader.classList.contains('authoring-header--collapsed')) {
+            authoringHeader.classList.remove('authoring-header--collapsed');
+        } else {
+            authoringHeader.classList.add('authoring-header--collapsed');
+        }
+    });
+
+    {% if form_errors %}
+        showModal();
+    {% else %}
+        const approvalForm = document.getElementById('form-submit-approval');
+
+        approvalForm.addEventListener('input', (e) => {
+            if (approvalForm.checkValidity()) {
+                btnApprove.removeAttribute('disabled');
+            } else {
+                btnApprove.setAttribute('disabled', '');
+            }
+        });
+    {% endif %}
+</script>
