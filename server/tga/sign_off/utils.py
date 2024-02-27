@@ -131,11 +131,11 @@ def get_css_filename():
 
 def modify_asset_urls(item, author_id: ObjectId):
     pattern = re.compile('\/api\/upload-raw\/(.*?)"')
-    new_body_html = item["body_html"]
+    new_body_html = item.get("body_html", "")
     url_prefix = "/api/upload-raw/"
     url_prefix_len = len(url_prefix)
 
-    for asset_filename in re.findall(pattern, item["body_html"]):
+    for asset_filename in re.findall(pattern, item.get("body_html", "")):
         asset_token = gen_jwt_for_approval_request(asset_filename, author_id, "upload-raw", token_expiration=3600)
         new_body_html = new_body_html.replace(
             url_prefix + asset_filename, f"/api/sign_off_requests/upload-raw/{asset_token}"
@@ -148,6 +148,11 @@ def modify_asset_urls(item, author_id: ObjectId):
             continue
         for size_name, rendition in (association.get("renditions") or {}).items():
             rendition_href = rendition["href"]
+
+            if "s3.amazonaws.com" in rendition_href:
+                # Skip modification, if it is pointing to Amazon S3
+                continue
+
             asset_filename = rendition_href[rendition_href.index(url_prefix) + url_prefix_len :]
             asset_token = gen_jwt_for_approval_request(asset_filename, author_id, "upload-raw", token_expiration=3600)
             rendition["href"] = rendition_href.replace(
