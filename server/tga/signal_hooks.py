@@ -13,8 +13,10 @@ CROSSREF_DOI_PREFIX = "10.54377"
 
 def generate_doi(_sender, item, updates):
     """Assign a DOI to this item if one does not already exist"""
-
     item.setdefault("extra", {})
+    if item["extra"].get("doi"):
+        return
+
     updates.setdefault("extra", {})
     updates["extra"]["doi"] = updates["extra"].get("doi") or item["extra"].get("doi") or _generate_short_unique_id()
     item["extra"]["doi"] = updates["extra"]["doi"]
