@@ -209,12 +209,8 @@ SCHEMA_UPDATE = {
         "extra": {
             "type": "dict",
             "schema": {},
-            "mapping": {
-                "type": "object",
-                "properties": {"university": {"type": "string"}},
-            },
+            "mapping": {"type": "object", "dynamic": False, "properties": {"university": {"type": "string"}}},
         },
         "allow_unknown": True,
-        "dynamic": False,
     }
 }
