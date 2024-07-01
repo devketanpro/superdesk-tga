@@ -211,16 +211,10 @@ SCHEMA_UPDATE = {
             "schema": {},
             "mapping": {
                 "type": "object",
-                "properties": {
-                    "university": {
-                        "properties": {
-                            "qcode": {"type": "string"},
-                            "name": {"type": "string"},
-                        }
-                    },
-                },
+                "properties": {"university": {"type": "string"}},
             },
-            "allow_unknown": True,
-        }
+        },
+        "allow_unknown": True,
+        "dynamic": False,
     }
 }
