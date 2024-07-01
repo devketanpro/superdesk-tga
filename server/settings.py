@@ -203,3 +203,24 @@ SIGN_OFF_REQUESTS_EXPIRATION = 86400  # 1 day in seconds
 
 # Disable purging of publish queue
 PUBLISH_QUEUE_EXPIRY_MINUTES = 0
+
+SCHEMA_UPDATE = {
+    "archive": {
+        "extra": {
+            "type": "dict",
+            "schema": {},
+            "mapping": {
+                "type": "object",
+                "properties": {
+                    "university": {
+                        "properties": {
+                            "qcode": {"type": "string"},
+                            "name": {"type": "string"},
+                        }
+                    },
+                },
+            },
+            "allow_unknown": True,
+        }
+    }
+}
