@@ -17,6 +17,7 @@ from superdesk.errors import SuperdeskApiError
 from superdesk.utc import utcnow
 from superdesk.notification import push_notification
 from superdesk.emails import send_email
+from superdesk.types import Item
 
 from tga.types import (
     SignOffAuthor,
@@ -61,7 +62,7 @@ def get_publish_sign_off_data(item: Dict[str, Any]) -> Optional[PublishSignOffDa
             author_sign_off = AuthorSignOffData(
                 user_id=user_id,
                 sign_date=legacy_sign_off["sign_date"],
-                version_signed=item.get("version"),
+                version_signed=int(item.get("version", 0) or 0),
                 funding_source=legacy_sign_off.get("funding_source"),
                 affiliation=legacy_sign_off.get("affiliation"),
                 copyright_terms="",
