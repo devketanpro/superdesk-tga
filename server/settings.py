@@ -210,7 +210,7 @@ SCHEMA_UPDATE = {
             "type": "dict",
             "schema": {},
             "mapping": {"type": "object", "dynamic": False, "properties": {"university": {"type": "string"}}},
-        },
-        "allow_unknown": True,
+            "allow_unknown": True,
+        }
     }
 }
