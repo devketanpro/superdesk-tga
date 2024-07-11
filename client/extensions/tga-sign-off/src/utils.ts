@@ -46,10 +46,12 @@ export function hasUserSignedOff(item: IArticle): boolean {
 }
 
 export function getListAuthorIds(item: IArticle): Array<IUser['_id']> {
-    // @ts-ignore
+    const {notNullOrUndefined} = superdesk.helpers;
+
     return (item.authors ?? [])
+        .filter(author => author.role === 'editor')
         .map((author) => author.parent)
-        .filter((authorId) => authorId != null);
+        .filter(notNullOrUndefined);
 }
 
 export function loadUsersFromPublishSignOff(item: IArticle): Promise<{[userId: string]: IUser}> {
