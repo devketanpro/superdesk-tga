@@ -1,4 +1,4 @@
-import {IArticle, IAuthor, IUser} from 'superdesk-api';
+import {IArticle, IUser} from 'superdesk-api';
 import {IPublishSignOff} from './interfaces';
 import {superdesk} from './superdesk';
 
@@ -45,17 +45,13 @@ export function hasUserSignedOff(item: IArticle): boolean {
     return false;
 }
 
-function getAuthorsWithEditorRole(authors: Array<IAuthor>): Array<IAuthor> {
-    return authors.filter(author => author.role === 'editor');
-}
-
 export function getListAuthorIds(item: IArticle): Array<IUser['_id']> {
-    const authorsWithEditorRole = getAuthorsWithEditorRole(item.authors ?? []);
+    const {notNullOrUndefined} = superdesk.helpers;
 
-    // @ts-ignore
-    return authorsWithEditorRole
+    return (item.authors ?? [])
+        .filter(author => author.role === 'editor')
         .map((author) => author.parent)
-        .filter((authorId) => authorId != null);
+        .filter(notNullOrUndefined);
 }
 
 export function loadUsersFromPublishSignOff(item: IArticle): Promise<{[userId: string]: IUser}> {
