@@ -115,7 +115,7 @@ flask-wtf==1.2.1
     # via -r requirements.in
 future==1.0.0
     # via python-twitter
-gunicorn==22.0.0
+gunicorn==23.0.0
     # via -r requirements.in
 hachoir==3.0a3
     # via superdesk-core
