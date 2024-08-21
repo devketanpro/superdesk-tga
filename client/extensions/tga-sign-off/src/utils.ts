@@ -49,7 +49,7 @@ export function getListAuthorIds(item: IArticle): Array<IUser['_id']> {
     const {notNullOrUndefined} = superdesk.helpers;
 
     return (item.authors ?? [])
-        .filter(author => author.role === 'editor')
+        .filter(author => author.role !== 'editor')
         .map((author) => author.parent)
         .filter(notNullOrUndefined);
 }
