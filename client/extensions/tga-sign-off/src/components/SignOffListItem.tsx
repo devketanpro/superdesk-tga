@@ -34,6 +34,14 @@ type IProps = IPropsApproved | IPropsPendingOrExpired | IPropsNotSend;
 export function SignOffListItem(props: IProps) {
     const {formatDateTime, gettext} = superdesk.localization;
 
+    const isExpired = (date: string) => {
+        const sentDate = new Date(date);
+        const currentDate = new Date();
+        const expiryDate = new Date(sentDate.getTime() + 24 * 60 * 60 * 1000);
+
+        return currentDate > expiryDate;
+    };
+
     return (
         <React.Fragment>
             <div className="sd-d-flex sd-flex-align-items-center">
@@ -89,11 +97,14 @@ export function SignOffListItem(props: IProps) {
             {props.state !== 'pending' ? null : (
                 <div className="sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                     <label className="form-label form-label--block">{gettext('State:')}</label>
-                    {new Date(props.date) <= new Date() ? (
-                        <span>{gettext('Expired')}</span>
-                    ): (
-                        <span>{gettext('Pending')}</span>
-                    )}
+                    {isExpired(props.date)
+                        ? (
+                            <span>{gettext('Expired')}</span>
+                        )
+                        : (
+                            <span>{gettext('Sent')}</span>
+                        )
+                    }
                 </div>
             )}
             {props.state !== 'not_sent' ? null : (
