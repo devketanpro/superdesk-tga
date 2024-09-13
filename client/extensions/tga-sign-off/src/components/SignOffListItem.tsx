@@ -31,16 +31,16 @@ interface IPropsNotSend extends IPropsBase {
 
 type IProps = IPropsApproved | IPropsPendingOrExpired | IPropsNotSend;
 
+const isExpired = (date: string) => {
+    const sentDate = new Date(date);
+    const currentDate = new Date();
+    const expiryDate = new Date(sentDate.getTime() + 24 * 60 * 60 * 1000);
+
+    return currentDate > expiryDate;
+};
+
 export function SignOffListItem(props: IProps) {
     const {formatDateTime, gettext} = superdesk.localization;
-
-    const isExpired = (date: string) => {
-        const sentDate = new Date(date);
-        const currentDate = new Date();
-        const expiryDate = new Date(sentDate.getTime() + 24 * 60 * 60 * 1000);
-
-        return currentDate > expiryDate;
-    };
 
     return (
         <React.Fragment>
