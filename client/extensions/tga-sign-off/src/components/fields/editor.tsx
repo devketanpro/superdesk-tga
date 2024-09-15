@@ -213,6 +213,7 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
                                         onClick: this.sendSignOff.bind(this, [pendingReview.user_id]),
                                     }]}
                                     date={pendingReview.sent}
+                                    expiryDate={pendingReview.expires}
                                 />
                             )
                         ))}

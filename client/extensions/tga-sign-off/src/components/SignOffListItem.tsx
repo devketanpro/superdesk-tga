@@ -23,6 +23,7 @@ interface IPropsApproved extends IPropsBase {
 interface IPropsPendingOrExpired extends IPropsBase {
     state: 'pending';
     date: string;
+    expiryDate: string;
 }
 
 interface IPropsNotSend extends IPropsBase {
@@ -32,9 +33,8 @@ interface IPropsNotSend extends IPropsBase {
 type IProps = IPropsApproved | IPropsPendingOrExpired | IPropsNotSend;
 
 const isExpired = (date: string) => {
-    const sentDate = new Date(date);
     const currentDate = new Date();
-    const expiryDate = new Date(sentDate.getTime() + 24 * 60 * 60 * 1000);
+    const expiryDate = new Date(date);
 
     return currentDate > expiryDate;
 };
@@ -97,7 +97,7 @@ export function SignOffListItem(props: IProps) {
             {props.state !== 'pending' ? null : (
                 <div className="sd-margin-l--5 sd-padding-l--0-5 sd-margin-t--1">
                     <label className="form-label form-label--block">{gettext('State:')}</label>
-                    {isExpired(props.date)
+                    {isExpired(props.expiryDate)
                         ? (
                             <span>{gettext('Expired')}</span>
                         )
