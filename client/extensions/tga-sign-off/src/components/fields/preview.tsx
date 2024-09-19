@@ -120,7 +120,8 @@ export class UserSignOffPreview extends React.PureComponent<IProps, IState> {
                                     user={this.state.users[pendingReview.user_id]}
                                     readOnly={true}
                                     appendContentDivider={true}
-                                    date={pendingReview.expires}
+                                    date={pendingReview.sent}
+                                    expiryDate={pendingReview.expires}
                                 />
                             )
                         ))}
