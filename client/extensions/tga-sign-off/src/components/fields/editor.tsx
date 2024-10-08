@@ -149,6 +149,7 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
 
                 {publishSignOff?.sign_offs == null || publishSignOff.sign_offs.length === 0 ? null : (
                     <ToggleBox
+                        variant="simple"
                         title={gettext(
                             'Approvals ({{ count }})',
                             {count: publishSignOff.sign_offs.length}
@@ -195,6 +196,7 @@ export class UserSignOffField extends React.Component<IEditorProps, IState> {
 
                 {(pendingReviews.length + unsentAuthorIds.length) === 0 ? null : (
                     <ToggleBox
+                        variant="simple"
                         title={gettext(
                             'Pending Approvals ({{ count }})',
                             {count: pendingReviews.length + unsentAuthorIds.length}
