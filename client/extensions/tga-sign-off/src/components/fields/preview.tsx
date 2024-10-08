@@ -76,6 +76,7 @@ export class UserSignOffPreview extends React.PureComponent<IProps, IState> {
 
                 {publishSignOff?.sign_offs == null || publishSignOff.sign_offs.length === 0 ? null : (
                     <ToggleBox
+                        variant="simple"
                         title={gettext(
                             'Approvals ({{ count }})',
                             {count: publishSignOff.sign_offs.length}
@@ -108,6 +109,7 @@ export class UserSignOffPreview extends React.PureComponent<IProps, IState> {
 
                 {(pendingReviews.length + unsentAuthorIds.length) === 0 ? null : (
                     <ToggleBox
+                        variant="simple"
                         title={gettext(
                             'Pending Approvals ({{ count }})',
                             {count: pendingReviews.length + unsentAuthorIds.length}
